@@ -29,3 +29,5 @@ class Command(BaseCommand):
                 town=company.town,
             )
             company_index.save()
+
+

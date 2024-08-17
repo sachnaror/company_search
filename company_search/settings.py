@@ -1,19 +1,16 @@
-import random
-import string
 from pathlib import Path
 
 import mongoengine
+from mongoengine import connect
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Generate a secret key for your Django application
-SECRET_KEY = ''.join(random.choices(string.ascii_letters + string.digits + '!@#$%^&*(-_=+)'))
+SECRET_KEY = 'your-secret-key'
 
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,7 +36,7 @@ ROOT_URLCONF = 'company_search.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'companies/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -54,22 +51,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'company_search.wsgi.application'
 
-# MongoEngine Configuration
-MONGO_DB_NAME = 'companyDB'
-MONGO_HOST = 'localhost'
-MONGO_PORT = 27017
-MONGO_USERNAME = ''  # Optional
-MONGO_PASSWORD = ''  # Optional
-
-mongoengine.connect(
-    db=MONGO_DB_NAME,
-    host=MONGO_HOST,
-    port=MONGO_PORT,
-    username=MONGO_USERNAME,
-    password=MONGO_PASSWORD,
+# Connect to MongoDB using MongoEngine
+connect(
+    db='companyDB',
+    host='localhost',
+    port=27017,
+    # username='your-username',  # Optional
+    # password='your-password',  # Optional
 )
-
-# Password validators
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -86,9 +75,35 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_TZ = True
+STATIC_URL = '/static/'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+class DisableMigrations:
+    def __contains__(self, item):
+        return True
+
+    def __getitem__(self, item):
+        return None
+
+MIGRATION_MODULES = DisableMigrations()
+
+
+# settings.py
+
+from elasticsearch_dsl import connections
+
+# Define Elasticsearch connection
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': ['localhost:9200']  # Adjust this if your Elasticsearch is on a different host or port
+    }
+}
+
+# Set up Elasticsearch connection
+connections.configure(**ELASTICSEARCH_DSL)

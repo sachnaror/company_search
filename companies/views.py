@@ -1,7 +1,7 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
+from elasticsearch import Elasticsearch
 
-from .forms import CompanySearchForm
 from .models import Company
 from .search_indexes import CompanyIndex
 
@@ -12,26 +12,47 @@ def index(request):
 def search(request):
     query = request.GET.get('query')
     if query:
-        search_results = CompanyIndex.search().query("match", registered_name=query)[:10]
+        search_results = CompanyIndex.search().query("match", name=query)[:10]
         return render(request, 'companies/search_results.html', {'results': search_results})
     return render(request, 'companies/index.html')
 
+from django.shortcuts import get_object_or_404, render
+
+from .models import Company  # Update this with your actual model
+
+
 def company_detail(request, registration_number):
-    company = Company.objects.get(registration_number=registration_number)
+    company = get_object_or_404(Company, registration_number=registration_number)
     return render(request, 'companies/company_detail.html', {'company': company})
+def search_suggestions(request):
+    query = request.GET.get('query', '')
+    if len(query) < 3:
+        return JsonResponse({'suggestions': []})
+
+    search_results = CompanyIndex.search().query("match", name=query)[:10]
+    suggestions = [{'id': company.id, 'name': company.name} for company in search_results]
+    return JsonResponse({'suggestions': suggestions})
 
 
+from django.http import JsonResponse
+from elasticsearch import Elasticsearch
 
-def company_add(request):
-    if request.method == 'POST':
-        form = CompanySearchForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('company_list')
-    else:
-        form = CompanySearchForm()
-    return render(request, 'companies/company_add.html', {'form': form})
+# Initialize Elasticsearch client
+es = Elasticsearch(['http://localhost:9200'])
 
-def company_list(request):
-    companies = Company.objects.all()
-    return HttpResponse('<br>'.join([company.name for company in companies]))
+def search(request):
+    query = request.GET.get('query', '')
+    if query:
+        results = es.search(index='your_index_name', body={
+            'query': {
+                'match': {
+                    'name': {
+                        'query': query,
+                        'fuzziness': 'AUTO'
+                    }
+                }
+            }
+        })
+        suggestions = [hit['_source']['name'] for hit in results['hits']['hits']]
+        return JsonResponse({'suggestions': suggestions})
+    return JsonResponse({'suggestions': []})

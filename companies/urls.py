@@ -1,10 +1,9 @@
-# Your urls configuration here
 from django.urls import path
 
-from . import views
+from .views import company_detail, index, search
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('search/', views.search, name='search_results'),
-    path('company/<str:registration_number>/', views.company_detail, name='company_detail'),
+    path('', index, name='index'),
+    path('search/', search, name='search'),
+    path('company/<str:registration_number>/', company_detail, name='company_detail'),
 ]

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Search</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Style the dropdown */
+        .dropdown-menu {
+            border: 1px solid #ddd;
+            max-height: 200px;
+            overflow-y: auto;
+            position: absolute;
+            background: white;
+            z-index: 1000;
+        }
+        .dropdown-item {
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        .dropdown-item:hover {
+            background: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="search" placeholder="Search companies...">
+    <div id="dropdown-menu" class="dropdown-menu" style="display: none;"></div>
+
+    <script>
+        $(document).ready(function() {
+            $('#search').on('input', function() {
+                let query = $(this).val();
+                if (query.length > 2) {
+                    $.ajax({
+                        url: '/search/',
+                        data: { query: query },
+                        success: function(data) {
+                            let suggestions = data.suggestions;
+                            let dropdownMenu = $('#dropdown-menu');
+                            dropdownMenu.empty();
+                            if (suggestions.length > 0) {
+                                dropdownMenu.show();
+                                suggestions.forEach(function(item) {
+                                    dropdownMenu.append('<div class="dropdown-item">' + item + '</div>');
+                                });
+                            } else {
+                                dropdownMenu.hide();
+                            }
+                        }
+                    });
+                } else {
+                    $('#dropdown-menu').hide();
+                }
+            });
+
+            $(document).on('click', '.dropdown-item', function() {
+                let selectedValue = $(this).text();
+                $('#search').val(selectedValue);
+                $('#dropdown-menu').hide();
+                // You can add more logic here, such as redirecting to the company details page
+            });
+
+            $(document).click(function(event) {
+                if (!$(event.target).closest('#search, #dropdown-menu').length) {
+                    $('#dropdown-menu').hide();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
