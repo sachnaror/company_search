@@ -56,10 +56,10 @@ WSGI_APPLICATION = 'company_search.wsgi.application'
 from mongoengine import connect
 
 connect(
-    db="company_db",
-    username="username",
-    password="password",
-    host="mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.12",
+    db="companyDB",
+    username="",
+    password="",
+    host="mongodb://127.0.0.1:27017",
 )
 
 AUTH_PASSWORD_VALIDATORS = [
