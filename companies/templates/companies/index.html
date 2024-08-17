@@ -1,72 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Company Search</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        .dropdown-menu {
-            border: 1px solid #ddd;
-            max-height: 200px;
-            overflow-y: auto;
-            position: absolute;
-            background: white;
-            z-index: 1000;
-        }
-        .dropdown-item {
-            padding: 8px 16px;
-            cursor: pointer;
-        }
-        .dropdown-item:hover {
-            background: #f1f1f1;
-        }
-    </style>
 </head>
 <body>
-    <input type="text" id="search" placeholder="Search companies...">
-    <div id="dropdown-menu" class="dropdown-menu" style="display: none;"></div>
+    <input type="text" id="search" placeholder="Search for a company...">
+    <ul id="suggestions"></ul>
 
     <script>
-        $(document).ready(function() {
-            $('#search').on('input', function() {
-                let query = $(this).val();
-                if (query.length > 2) {  // Trigger search when more than 2 characters are typed
-                    $.ajax({
-                        url: '/search/',
-                        data: { query: query },
-                        success: function(data) {
-                            let suggestions = data.suggestions;
-                            let dropdownMenu = $('#dropdown-menu');
-                            dropdownMenu.empty();
-                            if (suggestions.length > 0) {
-                                dropdownMenu.show();
-                                suggestions.forEach(function(item) {
-                                    dropdownMenu.append('<div class="dropdown-item" data-registration-number="' + item.registration_number + '">' + item.name + '</div>');
-                                });
-                            } else {
-                                dropdownMenu.hide();
-                            }
-                        }
+        document.getElementById('search').addEventListener('input', function() {
+            const query = this.value;
+            if (query.length < 3) {
+                document.getElementById('suggestions').innerHTML = '';
+                return;
+            }
+
+            fetch(`/search/?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const suggestions = data.suggestions || [];
+                    const suggestionsList = document.getElementById('suggestions');
+                    suggestionsList.innerHTML = '';
+
+                    suggestions.forEach(suggestion => {
+                        const listItem = document.createElement('li');
+                        const link = document.createElement('a');
+                        link.href = `/company/${suggestion.registration_number}/`;
+                        link.textContent = suggestion.name;
+                        listItem.appendChild(link);
+                        suggestionsList.appendChild(listItem);
                     });
-                } else {
-                    $('#dropdown-menu').hide();
-                }
-            });
-
-            $(document).on('click', '.dropdown-item', function() {
-                let selectedValue = $(this).text();
-                let registrationNumber = $(this).data('registration-number');
-                $('#search').val(selectedValue);
-                $('#dropdown-menu').hide();
-                window.location.href = '/company/' + registrationNumber + '/';
-            });
-
-            $(document).click(function(event) {
-                if (!$(event.target).closest('#search, #dropdown-menu').length) {
-                    $('#dropdown-menu').hide();
-                }
-            });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         });
     </script>
 </body>
