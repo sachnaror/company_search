@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 
 from .forms import CompanySearchForm
@@ -33,4 +34,4 @@ def company_add(request):
 
 def company_list(request):
     companies = Company.objects.all()
-    return render(request, 'company_list.html', {'companies': companies})
+    return HttpResponse('<br>'.join([company.name for company in companies]))

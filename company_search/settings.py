@@ -1,20 +1,19 @@
-
-
+import random
+import string
 from pathlib import Path
 
-from mongoengine import connect
+import mongoengine
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-v8jmza=(4%3svmk7=s63tq&+@8ykrj8asi^s4fij&1p9g)_$zl'
+# Generate a secret key for your Django application
+SECRET_KEY = ''.join(random.choices(string.ascii_letters + string.digits + '!@#$%^&*(-_=+)'))
 
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -55,22 +54,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'company_search.wsgi.application'
 
+# MongoEngine Configuration
+MONGO_DB_NAME = 'companyDB'
+MONGO_HOST = 'localhost'
+MONGO_PORT = 27017
+MONGO_USERNAME = ''  # Optional
+MONGO_PASSWORD = ''  # Optional
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'companyDB',
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': 'localhost',
-            'port': 27017,
-            'username': '',       # Optional if authentication is not used
-            'password': '',       # Optional if authentication is not used
-            # 'authSource': 'admin',  # Optional if authentication is used
-        }
-    }
-}
+mongoengine.connect(
+    db=MONGO_DB_NAME,
+    host=MONGO_HOST,
+    port=MONGO_PORT,
+    username=MONGO_USERNAME,
+    password=MONGO_PASSWORD,
+)
 
+# Password validators
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -86,17 +85,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
