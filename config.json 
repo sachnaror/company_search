@@ -1,0 +1,12 @@
+{
+    "mongodb": {
+        "host": "localhost",
+        "port": 27017,
+        "database": "companyDB",
+        "collection": "companies"
+    },
+    "elasticsearch": {
+        "host": "http://localhost:9200",
+        "index": "company_index"
+    }
+}
