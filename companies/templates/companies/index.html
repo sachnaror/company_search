@@ -4,8 +4,11 @@
     <title>Company Search</title>
 </head>
 <body>
-    <input type="text" id="search" placeholder="Search for a company...">
-    <ul id="suggestions"></ul>
+    <!-- index.html -->
+<form action="{% url 'search' %}" method="get">
+    <input type="text" name="query" placeholder="Search..." autocomplete="off">
+    <button type="submit">Search</button>
+</form>
 
     <script>
         document.getElementById('search').addEventListener('input', function() {
