@@ -42,6 +42,9 @@ def company_detail(request, registration_number):
     company = get_object_or_404(Company, registration_number=registration_number)
     return render(request, 'companies/company_detail.html', {'company': company})
 
+
+es = Elasticsearch(['http://localhost:9200'])
+
 def search_suggestions(request):
     query = request.GET.get('query', '')
     if len(query) < 3:
@@ -56,7 +59,8 @@ def search_suggestions(request):
                 }
             }
         },
-        'size': 10
+        'size': 10,
+        '_source': ['name', 'registration_number']
     })
 
     suggestions = [
@@ -66,4 +70,5 @@ def search_suggestions(request):
         }
         for hit in results['hits']['hits']
     ]
+
     return JsonResponse({'suggestions': suggestions})

@@ -4,11 +4,12 @@
     <title>Company Search</title>
 </head>
 <body>
-    <!-- index.html -->
-<form action="{% url 'search' %}" method="get">
-    <input type="text" name="query" placeholder="Search..." autocomplete="off">
-    <button type="submit">Search</button>
-</form>
+    <form action="{% url 'search' %}" method="get">
+        <input type="text" id="search" name="query" placeholder="Search..." autocomplete="off">
+        <button type="submit">Search</button>
+    </form>
+
+    <ul id="suggestions"></ul>
 
     <script>
         document.getElementById('search').addEventListener('input', function() {
@@ -18,8 +19,13 @@
                 return;
             }
 
-            fetch(`/search/?query=${encodeURIComponent(query)}`)
-                .then(response => response.json())
+            fetch(`/search_suggestions/?query=${encodeURIComponent(query)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     const suggestions = data.suggestions || [];
                     const suggestionsList = document.getElementById('suggestions');
