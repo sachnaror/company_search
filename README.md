@@ -12,7 +12,7 @@ This project is a web application that allows users to search for company inform
 
 ## Prerequisites
 
-- **Python**: Ensure Python 3.8 or later is installed.
+- **Python**: Ensure Python 3.12.1 or later is installed.
 - **Django**: The web framework used for the application.
 - **Elasticsearch**: For full-text search capabilities.
 - **MongoDB**: To store the company data.
