@@ -43,16 +43,24 @@ es = Elasticsearch(['http://localhost:9200'])
 def search(request):
     query = request.GET.get('query', '')
     if query:
+        # Adjust the query to fit your needs
         results = es.search(index='your_index_name', body={
             'query': {
                 'match': {
                     'name': {
                         'query': query,
-                        'fuzziness': 'AUTO'
+                        'fuzziness': 'AUTO'  # Handle typos and variations
                     }
                 }
-            }
+            },
+            'size': 10  # Limit the number of results
         })
-        suggestions = [hit['_source']['name'] for hit in results['hits']['hits']]
+        suggestions = [
+            {
+                'name': hit['_source']['name'],
+                'registration_number': hit['_source']['registration_number']
+            }
+            for hit in results['hits']['hits']
+        ]
         return JsonResponse({'suggestions': suggestions})
     return JsonResponse({'suggestions': []})

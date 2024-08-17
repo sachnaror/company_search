@@ -6,7 +6,6 @@
     <title>Company Search</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        /* Style the dropdown */
         .dropdown-menu {
             border: 1px solid #ddd;
             max-height: 200px;
@@ -32,7 +31,7 @@
         $(document).ready(function() {
             $('#search').on('input', function() {
                 let query = $(this).val();
-                if (query.length > 2) {
+                if (query.length > 2) {  // Trigger search when more than 2 characters are typed
                     $.ajax({
                         url: '/search/',
                         data: { query: query },
@@ -43,7 +42,7 @@
                             if (suggestions.length > 0) {
                                 dropdownMenu.show();
                                 suggestions.forEach(function(item) {
-                                    dropdownMenu.append('<div class="dropdown-item">' + item + '</div>');
+                                    dropdownMenu.append('<div class="dropdown-item" data-registration-number="' + item.registration_number + '">' + item.name + '</div>');
                                 });
                             } else {
                                 dropdownMenu.hide();
@@ -57,9 +56,10 @@
 
             $(document).on('click', '.dropdown-item', function() {
                 let selectedValue = $(this).text();
+                let registrationNumber = $(this).data('registration-number');
                 $('#search').val(selectedValue);
                 $('#dropdown-menu').hide();
-                // You can add more logic here, such as redirecting to the company details page
+                window.location.href = '/company/' + registrationNumber + '/';
             });
 
             $(document).click(function(event) {
