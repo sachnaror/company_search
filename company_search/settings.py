@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+from mongoengine import connect
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-v8jmza=(4%3svmk7=s63tq&+@8ykrj8asi^s4fij&1p9g)_$zl'
@@ -20,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'companies',
 ]
 
 MIDDLEWARE = [
@@ -53,8 +56,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'company_search.wsgi.application'
 
 
-from mongoengine import connect
-
 connect(
     db="companyDB",
     username="",
@@ -78,9 +79,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -91,11 +89,6 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
