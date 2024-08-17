@@ -56,12 +56,20 @@ TEMPLATES = [
 WSGI_APPLICATION = 'company_search.wsgi.application'
 
 
-connect(
-    db="companyDB",
-    username="",
-    password="",
-    host="mongodb://127.0.0.1:27017",
-)
+DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'companyDB',
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+            'host': 'localhost',
+            'port': 27017,
+            'username': '',       # Optional if authentication is not used
+            'password': '',       # Optional if authentication is not used
+            # 'authSource': 'admin',  # Optional if authentication is used
+        }
+    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {

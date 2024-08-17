@@ -2,7 +2,8 @@ from django.core.management.base import BaseCommand
 from elasticsearch_dsl import Date, Document, Text
 
 from .models import Company
-from .search_indexes import CompanyIndex
+
+# from .search_indexes import CompanyIndex
 
 
 class CompanyIndex(Document):
