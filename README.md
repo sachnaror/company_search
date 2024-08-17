@@ -22,7 +22,7 @@ This project is a web application that allows users to search for company inform
 1. **Clone the Repository**
 
     ```bash
-    git clone https://github.com/yourusername/company-search.git
+    git clone https://github.com/sachnaror/company-search.git
     cd company-search
     ```
 
