@@ -96,4 +96,4 @@ This project is a web application that allows users to search for company inform
 
 ## Contact
 
-For any questions or issues, please contact [Your Name](mailto:schnaror@gmail.com).
+For any questions or issues, please contact [Sachin](mailto:schnaror@gmail.com).
